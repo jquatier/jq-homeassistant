@@ -1,0 +1,122 @@
+resources:
+  - url: /local/kiosk.js
+    type: js
+  - url: /local/mini-media-player-bundle.js?v=0.9.2
+    type: module
+title: JQ Home
+views:
+  - title: Main
+    id: main
+    cards:
+      - type: vertical-stack
+        id: stack1
+        cards:
+        - type: weather-forecast
+          id: weather
+          entity: weather.dark_sky
+        - type: media-control
+          id: media
+          entity: media_player.spotify
+        - type: entity-filter
+          id: notifications
+          entities:
+            - binary_sensor.trash_day
+          state_filter:
+            - "on"
+          show_empty: false
+          card: 
+            type: glance
+      - type: vertical-stack
+        id: stack2 
+        cards:
+        - type: entity-filter
+          id: presence
+          entities:
+            - entity: binary_sensor.wifi_presence
+              name: WiFi
+            - entity: binary_sensor.bluetooth_presence
+              name: BT
+            - entity: binary_sensor.homekit_presence
+              name: HomeKit
+            - entity: binary_sensor.garage_car_present
+              name: Garage
+          state_filter:
+            - "on"
+          card: 
+            type: glance
+            show_state: false
+        - type: horizontal-stack
+          id: gauges
+          cards:
+          - type: gauge
+            id: work-travel-time
+            entity: sensor.travel_time_to_work
+            title: To Work
+          - type: gauge
+            id: cpu-gauge
+            entity: sensor.processor_use
+            title: CPU
+            severity:
+              green: 0
+              yellow: 50
+              red: 85
+          - type: gauge
+            id: speed-gauge
+            entity: sensor.fastcom_download
+            title: Internet Speed
+      - type: vertical-stack
+        id: stack3
+        cards:
+        - type: entities
+          entities:
+          - entity: scene.main_lights_on
+            icon: mdi:lightbulb-on
+          - entity: scene.media_lighting
+            icon: mdi:lightbulb-on
+          - entity: scene.r_lights
+            icon: mdi:lightbulb-on
+          - entity: scene.bedtime
+            icon: mdi:lightbulb-on
+          - entity: scene.all_lights_off
+            icon: mdi:lightbulb-outline
+        - type: vertical-stack
+          cards:
+          - type: conditional
+            conditions:
+              - entity: binary_sensor.prusa_printing
+                state: "on"
+            card:
+              type: picture-entity
+              entity: camera.prusa_camera
+              show_state: false
+          - type: conditional
+            conditions:
+              - entity: binary_sensor.ender_printing
+                state: "on"
+            card:
+              type: picture-entity
+              entity: camera.ender_camera
+              show_state: false
+  - title: Bedroom
+    id: bedroom
+    cards:
+      - type: vertical-stack
+        id: stack-bedroom
+        cards:
+        - type: light
+          entity: light.bedroom
+        - type: weather-forecast
+          id: weather
+          entity: weather.dark_sky
+      - type: alarm-panel
+        id: alarm
+        title: House Alarm
+        entity: alarm_control_panel.alarmcom
+  - title: Cameras
+    id: cameras
+    panel: true
+    cards:
+      - type: picture-entity
+        entity: camera.foscam_camera
+        show_name: false
+        show_state: false

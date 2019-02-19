@@ -1,0 +1,70 @@
+- alias: 'Entry Lights On'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      from: 'on'
+      to: 'off'
+  condition:
+    - condition: time
+      after: '16:00'
+  action: 
+    - service: light.turn_on
+      entity_id: light.entry_lights_level
+
+- alias: 'Enable Welcome Trigger'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      from: 'on'
+      to: 'off'
+  action: 
+    - service: homeassistant.turn_on
+      entity_id: automation.welcome_motion
+    - service: light.turn_on
+      entity_id: group.switchplate_backlights
+
+- alias: 'Disarm Cameras'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      from: 'on'
+      to: 'off'
+  action: 
+    - service: alarm_control_panel.alarm_arm_home
+      entity_id: alarm_control_panel.jq_arlo
+
+- alias: 'Disarm Alarm'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      to: 'off'
+  action:
+    - service: alarm_control_panel.alarm_disarm
+      data:
+        entity_id: alarm_control_panel.alarm_com
+        code: !secret adc_code
+    - service: switch.turn_on
+      entity_id: switch.alarm_controller_disarm
+
+- alias: 'Welcome Motion'
+  initial_state: False
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.stairs_motion_sensor
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.entry_motion_sensor
+      to: 'on'
+  action:
+    - service: homeassistant.turn_off
+      entity_id: automation.welcome_motion
+    - service: scene.turn_on
+      entity_id: scene.main_lights_on
+    - delay:
+        seconds: 4
+    - service: script.welcome_greeting
+    - delay:
+        seconds: 10
+    - service: switch.flux_update
+      entity_id: switch.flux

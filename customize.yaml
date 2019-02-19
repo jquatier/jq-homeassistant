@@ -1,0 +1,145 @@
+binary_sensor.living_room_thermostat_nest_fan:
+  hidden: true
+binary_sensor.living_room_thermostat_nest_has_leaf:
+  hidden: true
+binary_sensor.living_room_thermostat_nest_is_locked:
+  hidden: true
+binary_sensor.living_room_thermostat_nest_is_using_emergency_heat:
+  hidden: true
+sensor.living_room_thermostat_nest_target:
+  hidden: true
+sensor.living_room_thermostat_nest_operation_mode:
+  hidden: true
+binary_sensor.living_room_thermostat_nest_online:
+  hidden: true
+binary_sensor.upstairs_nest_protect_online:
+  hidden: true
+sensor.upstairs_nest_protect_battery_health:
+  hidden: true
+input_boolean.homekit_presence:
+  hidden: true
+switch.outdoor_plug_switch:
+  friendly_name: Outdoor Plug
+  icon: mdi:power-plug
+  hidden: true
+switch.alexa_bedtime:
+  hidden: true
+sensor.media_player_title:
+  hidden: true
+sensor.media_player_artist:
+  hidden: true
+sensor.media_player_volume:
+  hidden: true
+light.kitchen_lights_level:
+  friendly_name: Kitchen Lights
+light.track_lights_level:
+  friendly_name: Track Lights
+light.floor_lamp_level:
+  friendly_name: Floor Lamp
+light.bedroom:
+  friendly_name: Bedroom Lights
+light.entry_lights_level:
+  friendly_name: Entry Lights
+light.dining_room_light_level:
+  friendly_name: Dining Room Light
+binary_sensor.kitchen_motion_sensor:
+  friendly_name: Kitchen Motion Sensor
+sensor.kitchen_motion_alarm_level:
+  hidden: true
+sensor.kitchen_motion_alarm_type:
+  hidden: true
+sensor.kitchen_motion_burglar:
+  hidden: true
+sensor.kitchen_motion_sourcenodeid:
+  hidden: true
+sensor.entry_motion_alarm_level:
+  hidden: true
+sensor.entry_motion_alarm_type:
+  hidden: true
+sensor.entry_motion_burglar:
+  hidden: true
+sensor.entry_motion_sourcenodeid:
+  hidden: true
+sensor.dark_sky_hourly_summary:
+  hidden: true
+sensor.alarm_gradual_wake_seconds:
+  hidden: true
+sensor.time:
+  hidden: true
+sensor.date:
+  hidden: true
+sensor.day_of_the_week:
+  hidden: true
+sensor.mp_smart_plug_1_current:
+  hidden: true
+sensor.mp_smart_plug_1_energy:
+  hidden: true
+sensor.mp_smart_plug_1_power:
+  hidden: true
+sensor.mp_smart_plug_1_previous_reading:
+  hidden: true
+sensor.mp_smart_plug_1_previous_read:
+  hidden: true
+sensor.mp_smart_plug_1_voltage:
+  hidden: true
+sensor.mp_smart_plug_1_power_factor:
+  hidden: true
+sensor.mp_smart_plug_1_energy_kvah:
+  hidden: true
+sensor.jeep_presence_signal:
+  hidden: true
+sensor.jeep_presence_uptime:
+  hidden: true
+binary_sensor.wifi_presence:
+  icon: mdi:home-automation
+binary_sensor.bluetooth_presence:
+  icon: mdi:home-automation
+binary_sensor.homekit_presence:
+  icon: mdi:home-map-marker
+binary_sensor.motion_presence:
+  icon: mdi:run
+sensor.bluetooth_presence_probability:
+  icon: mdi:calculator
+sensor.bayesian_presence_probability:
+  icon: mdi:calculator
+binary_sensor.garage_car_present:
+  icon: mdi:car
+binary_sensor.stairs_motion_sensor:
+  device_class: motion
+binary_sensor.entry_motion_sensor:
+  device_class: motion
+sensor.battery_shop_lights_switch:
+  device_class: battery
+sensor.cpu_use:
+  friendly_name: CPU Usage
+sensor.ram_use:
+  friendly_name: RAM Usage
+sensor.battery_stairs_motion:
+  device_class: battery
+sensor.battery_entry_motion:
+  device_class: battery
+switch.flux:
+  hidden: true
+light.bedroom_lamp_1:
+  hidden: true
+light.bedroom_lamp_2:
+  hidden: true
+light.kitchen:
+  friendly_name: Kitchen Lightstrips
+light.kitchen_lightstrip:
+  hidden: true
+light.kitchen_counter_lightstrip:
+  hidden: true
+script.bedtime:
+  icon: mdi:hotel
+script.morning_greeting:
+  hidden: true
+  icon: mdi:newspaper
+script.welcome_greeting:
+  hidden: true
+script.timed_kitchen_lights:
+  hidden: true
+script.timed_entry_lights:
+  hidden: true
+script.restart:
+  hidden: true

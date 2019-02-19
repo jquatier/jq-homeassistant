@@ -1,0 +1,13 @@
+alias: Welcome Greeting
+sequence:
+  - service: media_player.alexa_tts
+    data_template:
+      entity_id: media_player.jacobs_echo_dot
+      message: >
+        Welcome Home, 
+        {% if states.sensor.deliveries.state | int > 0  %}
+        You have {{states.sensor.deliveries.state}} deliveries today.
+        {% endif %}
+        {% if is_state('binary_sensor.trash_day', 'on') %}
+        Don't forget to take out the trash tonight.
+        {% endif %}

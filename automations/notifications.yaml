@@ -1,0 +1,110 @@
+- alias: 'House Too Cold'
+  hide_entity: True
+  trigger:
+    - platform: numeric_state
+      entity_id: climate.living_room_nest
+      value_template: '{{ state.attributes.current_temperature }}'
+      below: 60
+  action: 
+    - service: script.notify
+      data:
+        message: "House is too cold. Temperature is {{ states.climate.living_room_nest.attributes.current_temperature }}"
+
+
+- alias: 'Low Battery Alert'
+  trigger:
+    - platform: time
+      at: '20:00'
+  condition:
+    - condition: template
+      value_template: >-
+        {% for entity_id in states.group.battery_levels.attributes.entity_id if states(entity_id) | int < 25 %}
+        {%- if loop.first -%}
+        {{ true }}
+        {%- endif -%}
+        {% endfor %}
+  action:
+    service: script.notify
+    data:
+      message: "Low battery detected for at least one sensor"
+
+- alias: 'GPS Updates Missing'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.gps_updates_missing
+      to: 'on'
+  action:
+    service: script.notify
+    data:
+      message: "GPS Updates Missing"
+
+- alias: 'Car Approaching'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.jeep_presence
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: binary_sensor.garage_car_present
+      state: 'off'
+      for:
+        minutes: 5
+  action:
+    service: script.notify
+    data:
+      message: "Car Approaching"
+
+- alias: 'Internet Failure'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.internet_connection
+      to: 'off'
+  action: 
+    - service: script.notify
+      data:
+        message: "Internet connection is DOWN"
+
+- alias: 'Internet Restored'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.internet_connection
+      to: 'on'
+  action: 
+    - service: script.notify
+      data:
+        message: "Internet connection is restored"
+
+- alias: 'RAM Usage Warning'
+  hide_entity: True
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.ram_use
+      above: 96
+  action: 
+    - service: script.notify
+      data:
+        message: "RAM usage too high. Utilization is {{ states.sensor.ram_use.state }}%"
+
+- alias: 'Startup Notification'
+  hide_entity: True
+  trigger:
+    platform: homeassistant
+    event: start
+  action: 
+    - service: script.notify
+      data:
+        message: "HASS startup complete"
+    - service: frontend.set_theme
+      data:
+        name: slate
+
+- alias: 'Update Available'
+  trigger:
+    platform: state
+    entity_id: updater.updater
+  action:
+    service: script.notify
+    data:
+      message: 'Home Assistant update is available.'

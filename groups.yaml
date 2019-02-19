@@ -1,0 +1,159 @@
+presence:
+  name: Presence
+  control: hidden
+  entities:
+    - binary_sensor.presence
+    - binary_sensor.wifi_presence
+    - binary_sensor.bluetooth_presence
+    - binary_sensor.homekit_presence
+    - binary_sensor.motion_presence
+    - binary_sensor.bayesian_presence
+    - sensor.bayesian_presence_probability
+    - sensor.bluetooth_presence_probability
+    - sensor.upstairs_presence
+    - sensor.main_floor_presence
+    - sensor.garage_presence
+    - binary_sensor.garage_car_present
+controls:
+  name: Controls
+  control: hidden
+  entities:
+    - input_boolean.away_mode
+    - input_boolean.guest_mode
+    - script.bedtime
+main_lights:
+  name: Main Lights
+  entities:
+    - light.kitchen_lights_level
+    - light.track_lights_level
+    - light.living_room
+    - light.kitchen
+all_house_lights:
+  name: All House Lights
+  entities:
+    - light.bedroom
+    - light.kitchen_lights_level
+    - light.track_lights_level
+    - light.living_room
+    - light.kitchen
+    - light.dining_room_accent
+    - light.dining_room_light_level
+    - light.entry_lights_level
+    - light.floor_lamp_level
+environment:
+  name: Environment
+  entities:
+    - climate.living_room_nest
+    - binary_sensor.jq_nest_away
+    - sensor.jq_nest_eta
+    - input_number.bedtime_temperature
+    - sensor.living_room_thermostat_nest_humidity
+    - sensor.living_room_thermostat_nest_hvac_state
+    - sensor.living_room_thermostat_nest_temperature
+    - sensor.upstairs_nest_protect_color_status
+    - sensor.upstairs_nest_protect_co_status
+    - sensor.upstairs_nest_protect_smoke_status
+system:
+  name: System
+  entities:
+    - updater.updater
+    - sensor.uptime
+    - sensor.uptime_minutes
+    - sensor.processor_use
+    - sensor.memory_use_percent
+    - sensor.fast_com_download
+    - binary_sensor.internet_connection
+    - sensor.transmission_status
+    - sensor.transmission_up_speed
+    - sensor.transmission_down_speed
+    - switch.transmission_turtle_mode
+outside:
+  name: Outside
+  entities:
+    - sun.sun
+    - sensor.moon
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_temperature_0
+    - sensor.dark_sky_summary
+    - sensor.dark_sky_summary_0
+    - sensor.dark_sky_hourly_summary
+    - sensor.dark_sky_daytime_high_temperature_0
+    - sensor.dark_sky_overnight_low_temperature_0
+    - sensor.u_s_air_pollution_level
+    - sensor.u_s_air_quality_index
+    - sensor.u_s_main_pollutant
+3dprinter1:
+  name: Prusa 3D Printer
+  entities:
+    - camera.prusa_camera
+    - sensor.prusa_current_state
+    - sensor.prusa_job_percentage
+    - sensor.prusa_target_bed_temp
+    - sensor.prusa_actual_bed_temp
+    - sensor.prusa_target_tool0_temp
+    - sensor.prusa_actual_tool0_temp
+    - binary_sensor.prusa_printing
+    - binary_sensor.prusa_printing_error
+    - switch.3dprinter_light
+3dprinter2:
+  name: Ender 3D Printer
+  entities:
+    - camera.ender_camera
+    - sensor.ender_current_state
+    - sensor.ender_job_percentage
+    - sensor.ender_target_bed_temp
+    - sensor.ender_actual_bed_temp
+    - sensor.ender_target_tool0_temp
+    - sensor.ender_actual_tool0_temp
+    - binary_sensor.ender_printing
+    - binary_sensor.ender_printing_error
+battery_levels:
+  name: Battery Levels
+  control: hidden
+  entities:
+    - sensor.battery_entry_motion
+    - sensor.battery_stairs_motion
+    - sensor.battery_shop_lights_switch
+sensor_status:
+  name: Sensor Status
+  control: hidden
+  entities:
+    - binary_sensor.garage_presence_sensor_status
+    - binary_sensor.bedroom_multisensor_status
+    - binary_sensor.kitchen_multisensor_status
+    - binary_sensor.dining_motion_sensor_status
+    - binary_sensor.shop_multisensor_status
+    - binary_sensor.alarm_controller_status
+motion_sensors:
+  name: Motion Sensors
+  control: hidden
+  entities:
+    - binary_sensor.kitchen_motion
+    - binary_sensor.dining_motion
+    - binary_sensor.stairs_motion_sensor
+    - binary_sensor.bedroom_motion
+    - binary_sensor.entry_motion_sensor
+    - binary_sensor.shop_motion
+bedroom_sensor:
+  name: Bedroom Sensor
+  entities:
+    - sensor.bedroom_temperature
+    - sensor.bedroom_humidity
+    - sensor.bedroom_brightness
+kitchen_sensor:
+  name: Kitchen Sensor
+  entities:
+    - sensor.kitchen_temperature
+    - sensor.kitchen_humidity
+    - sensor.kitchen_brightness
+shop_sensor:
+  name: Shop Sensor
+  entities:
+    - sensor.shop_temperature
+    - sensor.shop_humidity
+    - sensor.shop_brightness
+switchplate_backlights:
+  name: Switchplate Backlights
+  entities:
+    - light.living_hasp_backlight
+    - light.master_hasp_backlight

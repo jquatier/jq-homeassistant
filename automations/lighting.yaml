@@ -1,0 +1,245 @@
+- alias: 'Ensure Lights Out'
+  hide_entity: True
+  trigger:
+    platform: time
+    at: '02:00'
+  condition:
+    - condition: state
+      entity_id: group.all_house_lights
+      state: 'on'
+  action:
+    - service: scene.turn_on
+      entity_id: scene.all_lights_off
+
+- alias: 'Kitchen Lights On'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.kitchen_motion
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.dining_motion
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.kitchen_lights_level
+        state: 'off'
+      - condition: state
+        entity_id: script.bedtime
+        state: 'off'
+      - condition: sun
+        after: sunset
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_lights_level
+      data_template:
+        brightness_pct: '{% if states.sun.sun.attributes.elevation <= -35 %}10{% elif states.sun.sun.attributes.elevation <= -22 %}25{% elif states.sun.sun.attributes.elevation <= -15 %}50{% elif states.sun.sun.attributes.elevation <= -6 %}75{% elif states.sun.sun.attributes.elevation > -6 %}100{% else %}0{% endif %}'
+
+- alias: 'Kitchen Lights Off'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.kitchen_motion
+      to: 'off'
+      for:
+        minutes: 15
+    - platform: state
+      entity_id: binary_sensor.dining_motion
+      to: 'off'
+      for:
+        minutes: 15
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.kitchen_motion
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.dining_motion
+        state: 'off'
+  action:
+    - service: light.turn_off
+      entity_id: light.kitchen_lights_level
+
+- alias: 'Dining Room Lights Off'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.dining_motion
+      to: 'off'
+      for:
+        minutes: 30
+  action:
+    - service: light.turn_off
+      entity_id: light.dining_room_light_level
+
+- alias: 'Kitchen Lights On Late'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.stairs_motion_sensor
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.kitchen_motion
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '23:30'
+        before: '5:00'
+      - condition: state
+        entity_id: light.kitchen_lights_level
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data_template:
+        transition: 5
+        brightness: 50
+
+- alias: 'Kitchen Lights Off Late'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.kitchen_motion
+      to: 'off'
+      for:
+        minutes: 5
+  condition:
+    - condition: time
+      after: '23:00'
+      before: '5:00'
+  action:
+    - service: light.turn_off
+      entity_id: light.kitchen
+      data_template:
+        transition: 5
+
+- alias: '3D Printer Lights On'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.shop_motion
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.prusa_printing
+      from: 'off'
+      to: 'on'
+  action:
+    - service: switch.turn_on
+      data: 
+        entity_id: switch.3dprinter_light
+
+- alias: '3D Printer Lights Off'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.prusa_printing
+      from: 'on'
+      to: 'off'
+      for:
+        hours: 1
+  condition:
+    - condition: state
+      entity_id: binary_sensor.prusa_printing
+      state: 'off'
+  action:
+    - service: switch.turn_off
+      data: 
+        entity_id: switch.3dprinter_light
+
+- alias: 'Night Lighting On'
+  trigger:
+    - platform: time
+      at: '20:00'
+  condition:
+    - condition: state
+      entity_id: input_boolean.away_mode
+      state: 'on'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.night_leds
+
+- alias: 'Night Lighting Off'
+  hide_entity: True
+  trigger:
+    - platform: sun
+      event: sunrise
+      offset: '+01:00:00'
+    - platform: state
+      entity_id: input_boolean.away_mode
+      to: 'off'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.night_leds
+
+- alias: 'Entry Lighting On'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.entry_motion_sensor
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: light.entry_lights_level
+        state: 'off'
+      - condition: sun
+        after: sunset
+        after_offset: "-02:00:00"
+  action:
+    - service: light.turn_on
+      entity_id: light.entry_lights_level
+      data_template:
+        brightness_pct: '{% if states.sun.sun.attributes.elevation <= -35 %}10{% elif states.sun.sun.attributes.elevation <= -22 %}25{% elif states.sun.sun.attributes.elevation <= -15 %}50{% elif states.sun.sun.attributes.elevation <= -6 %}75{% elif states.sun.sun.attributes.elevation > -6 %}100{% else %}0{% endif %}'
+
+- alias: 'Entry Lighting Off'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.entry_motion_sensor
+      to: 'off'
+      for:
+        minutes: 5
+  action:
+    - service: light.turn_off
+      entity_id: light.entry_lights_level
+      data_template:
+        transition: 60
+
+- alias: 'Shop Lights On'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.shop_motion
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: script.bedtime
+        state: 'off'
+      - condition: time
+        after: '09:00:00'
+        before: '22:00:00'
+  action:
+    - service: switch.turn_on
+      data: 
+        entity_id: switch.shop_lights
+
+- alias: 'Shop Lights Off'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.shop_motion
+      to: 'off'
+      for:
+        minutes: 30
+    - platform: state
+      entity_id: binary_sensor.garage_car_present
+      to: 'off'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.shop_lights

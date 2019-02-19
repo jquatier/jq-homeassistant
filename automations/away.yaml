@@ -1,0 +1,110 @@
+- alias: 'Set Away Mode'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.presence
+      to: 'off'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.guest_mode
+        state: 'off'
+      - condition: template
+        value_template: "{{ not is_state('alarm_control_panel.alarm_com', 'armed_home') }}"
+      - condition: state
+        entity_id: input_boolean.away_mode
+        state: 'off'
+        for:
+          minutes: 2
+      - condition: numeric_state
+        entity_id: sensor.uptime_minutes
+        above: 15
+  action: 
+    - service: homeassistant.turn_on
+      entity_id: input_boolean.away_mode
+    - service: notify.push
+      data:
+        message: "Away Mode Activated"
+
+- alias: 'Unset Away Mode'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.presence
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.uptime_minutes
+      above: 15
+  action: 
+    - service: homeassistant.turn_off
+      entity_id: input_boolean.away_mode
+    - service: notify.push
+      data:
+        message: "Welcome Home!"
+
+- alias: 'Away Mode Activated'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      to: 'on'
+  action:
+    - service: scene.turn_on
+      entity_id: scene.all_lights_off
+    - service: alarm_control_panel.alarm_arm_away
+      entity_id: alarm_control_panel.jq_arlo
+    - service: climate.set_away_mode
+      data:
+        entity_id: climate.living_room_nest
+        away_mode: true
+    - delay:
+        seconds: 15
+    - service: scene.turn_on
+      entity_id: scene.all_lights_off
+    - service: homeassistant.turn_off
+      entity_id: switch.transmission_turtle_mode
+    - service: light.turn_off
+      entity_id: group.switchplate_backlights
+
+- alias: 'Arm Alarm'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      from: 'off'
+      to: 'on'
+      for:
+        minutes: 2
+  action:
+    - service: switch.turn_on
+      entity_id: switch.alarm_controller_arm_away
+
+- alias: 'Arm Alarm Backup'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      from: 'off'
+      to: 'on'
+      for:
+        minutes: 20
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.alarm_com
+      state: 'disarmed'
+  action:
+    - service: alarm_control_panel.alarm_arm_away
+      data:
+        entity_id: alarm_control_panel.alarm_com
+        code: !secret adc_code
+
+- alias: 'Away Mode Deactivated'
+  trigger:
+    - platform: state
+      entity_id: input_boolean.away_mode
+      to: 'off'
+  action:
+    - service: climate.set_away_mode
+      data:
+        entity_id: climate.living_room_nest
+        away_mode: false
+    - service: homeassistant.turn_on
+      entity_id: switch.transmission_turtle_mode

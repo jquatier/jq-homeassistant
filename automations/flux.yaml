@@ -1,0 +1,21 @@
+- alias: 'Update Flux Effect'
+  trigger:
+    - platform: state
+      entity_id: sun.sun
+      to: 'below_horizon'
+    - platform: time_pattern
+      minutes: 10
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '23:59'
+      - condition: state
+        entity_id: light.living_room_lamp_1
+        state: 'on'
+      - condition: state
+        entity_id: light.living_room_lamp_2
+        state: 'on'
+  action:
+    - service: switch.flux_update
+      entity_id: switch.flux

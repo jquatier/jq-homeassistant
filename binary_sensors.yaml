@@ -1,0 +1,79 @@
+- platform: workday
+  country: US
+
+- platform: ping
+  name: Internet Connection
+  host: google.com
+  count: 2
+
+- platform: template
+  sensors:
+    trash_day:
+      friendly_name: "Trash Day"
+      value_template: >-
+        {{ is_state('sensor.day_of_the_week', 'Wednesday') }} 
+
+- platform: template
+  sensors: 
+    gps_updates_missing:
+      friendly_name: GPS Updates Missing
+      entity_id: sensor.time
+      value_template: >-
+        {{ (states.device_tracker.jeep_gps.last_updated is defined and (as_timestamp(now())-as_timestamp(states.device_tracker.jeep_gps.last_updated)) > 86400) }}
+
+- platform: template
+  sensors:
+    wifi_presence:
+      friendly_name: "WiFi Presence"
+      device_class: presence
+      value_template: >-
+        {{ is_state('device_tracker.iphone', 'home') }} 
+    bluetooth_presence:
+      friendly_name: "Bluetooth Presence"
+      device_class: presence
+      value_template: >-
+        {{ states.sensor.bluetooth_presence_probability.state | int > 50 }}
+    homekit_presence:
+      friendly_name: "HomeKit Presence"
+      device_class: presence
+      value_template: >-
+        {{ is_state('input_boolean.homekit_presence', 'on') }}
+    motion_presence:
+      friendly_name: "Motion Presence"
+      device_class: presence
+      value_template: >-
+        {{ is_state('group.motion_sensors', 'on') }}
+      delay_off:
+        minutes: 2
+    presence:
+      friendly_name: "Presence Status"
+      device_class: presence
+      value_template: >-
+        {{ is_state('binary_sensor.bayesian_presence', 'on') }} 
+
+- platform: bayesian
+  prior: 0.15
+  name: Bayesian Presence
+  device_class: presence
+  probability_threshold: 0.60
+  observations:
+    - entity_id: 'binary_sensor.wifi_presence'
+      prob_given_true: 0.6
+      prob_given_false: 0.05
+      platform: 'state'
+      to_state: 'on'
+    - entity_id: 'binary_sensor.homekit_presence'
+      prob_given_true: 0.25
+      prob_given_false: 0.05
+      platform: 'state'
+      to_state: 'on'
+    - entity_id: 'binary_sensor.garage_car_present'
+      prob_given_true: 0.25
+      prob_given_false: 0.05
+      platform: 'state'
+      to_state: 'on'
+    - entity_id: 'binary_sensor.jeep_presence'
+      prob_given_true: 0.6
+      prob_given_false: 0.05
+      platform: 'state'
+      to_state: 'on'

@@ -1,0 +1,192 @@
+- platform: fastdotcom
+
+- platform: moon
+
+- platform: uptime
+
+- platform: uptime
+  name: "Uptime Minutes"
+  unit_of_measurement: minutes
+
+- platform: template
+  sensors:
+    day_of_the_week:
+      entity_id: sensor.date
+      friendly_name: Day
+      value_template: >
+        {{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}
+
+- platform: google_travel_time
+  api_key: !secret google_travel_key
+  origin: !secret address
+  destination: !secret work_address
+  name: Travel Time to Work
+
+- platform: darksky
+  api_key: !secret darksky_secret
+  forecast:
+    - 0
+  monitored_conditions:
+    - summary
+    - temperature
+    - hourly_summary
+    - temperature_high
+    - temperature_low
+
+- platform: ups
+  username: !secret ups_username
+  password: !secret ups_password
+  update_interval:
+    hours: 1
+
+- platform: template
+  sensors:
+    deliveries:
+      friendly_name: "Deliveries"
+      value_template: >
+        {% macro delivered(sensor) %}
+          {% if 'delivered' in sensor.attributes %}
+            {{sensor.attributes.delivered}}
+          {% else %}
+             0
+          {% endif %}
+        {% endmacro %}
+        {{ delivered(states.sensor.ups) | int }}
+
+- platform: airvisual
+  api_key: !secret airvisual_key
+  monitored_conditions:
+    - us
+  show_on_map: false
+  latitude: !secret latitude
+  longitude: !secret longitude
+
+- platform: systemmonitor
+  resources:
+    - type: memory_use_percent
+    - type: processor_use
+
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+
+- platform: template
+  sensors:
+    bayesian_presence_probability:
+      friendly_name: 'Bayesian Presence Probability'
+      unit_of_measurement: '%'
+      value_template: '{{ states.binary_sensor.bayesian_presence.attributes.probability | float * 100 }}'
+
+# overall Bluetooth presence
+
+- platform: min_max
+  name: "Bluetooth Presence Probability"
+  type: max
+  round_digits: 0
+  entity_ids:
+    - sensor.garage_presence
+    - sensor.main_floor_presence
+    - sensor.upstairs_presence
+
+# presence garage
+
+- platform: template
+  sensors:
+    garage_presence:
+      friendly_name: 'Garage Presence'
+      unit_of_measurement: '%'
+      value_template: "{{ states.sensor.garage_presence_confidence.state | int }}"
+      icon_template: "{{ 'mdi:signal-off' if is_state('sensor.garage_presence_confidence', 'unavailable') else 'mdi:signal'}}"
+
+- platform: mqtt
+  state_topic: !secret presence_topic_garage
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Garage Presence Confidence'
+  json_attributes:
+    - id
+    - name
+    - rssi
+    - version
+    - manufacturer
+    - type
+    - timestamp
+    - retained
+    - confidence
+
+# presence main floor
+
+- platform: template
+  sensors:
+    main_floor_presence:
+      friendly_name: 'Main Floor Presence'
+      unit_of_measurement: '%'
+      value_template: "{{ states.sensor.main_floor_presence_confidence.state | int }}"
+      icon_template: "{{ 'mdi:signal-off' if is_state('sensor.main_floor_presence_confidence', 'unavailable') else 'mdi:signal'}}"
+
+- platform: mqtt
+  state_topic: !secret presence_topic_main_floor
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Main Floor Presence Confidence'
+  expire_after: 900
+  json_attributes:
+    - id
+    - name
+    - rssi
+    - version
+    - manufacturer
+    - type
+    - timestamp
+    - retained
+    - confidence
+
+# presence upstairs
+
+- platform: template
+  sensors:
+    upstairs_presence:
+      friendly_name: 'Upstairs Presence'
+      unit_of_measurement: '%'
+      value_template: "{{ states.sensor.upstairs_presence_confidence.state | int }}"
+      icon_template: "{{ 'mdi:signal-off' if is_state('sensor.upstairs_presence_confidence', 'unavailable') else 'mdi:signal'}}"
+
+- platform: mqtt
+  state_topic: !secret presence_topic_upstairs
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Upstairs Presence Confidence'
+  json_attributes:
+    - id
+    - name
+    - rssi
+    - version
+    - manufacturer
+    - type
+    - timestamp
+    - retained
+    - confidence
+
+- platform: template
+  sensors:
+    battery_stairs_motion:
+      value_template: '{{ states.zwave.stairs_motion.attributes.battery_level }}'
+      friendly_name: 'Stairs Motion'
+      unit_of_measurement: '%'
+
+- platform: template
+  sensors:
+    battery_entry_motion:
+      value_template: '{{ states.zwave.entry_motion.attributes.battery_level }}'
+      friendly_name: 'Entry Motion'
+      unit_of_measurement: '%'
+
+- platform: command_line
+  name: Battery Shop Lights Switch
+  command: !secret shop_lights_switch_battery_command
+  unit_of_measurement: '%'
+  scan_interval: 43200
+  command_timeout: 60
+  value_template: '{{ value | replace("Battery level: ","") | replace("%","") | int }}'
+

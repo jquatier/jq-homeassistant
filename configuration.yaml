@@ -1,0 +1,256 @@
+homeassistant:
+  packages: !include_dir_named packages
+  name: JQ Home
+  auth_providers:
+   - type: homeassistant
+   - type: legacy_api_password
+   - type: trusted_networks
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  unit_system: imperial
+  time_zone: !secret timezone
+  customize: !include customize.yaml
+
+frontend:
+  javascript_version: latest
+  themes: !include_dir_named themes/
+lovelace:
+  mode: yaml
+system_health:
+map:
+config:
+http:
+  api_password: !secret http_api_password
+  trusted_networks:
+    - 127.0.0.1
+    - ::1
+    - !secret home_subnet
+    - fd00::/8
+auth:
+updater:
+discovery:
+  ignore:
+    - plex_mediaserver
+    - apple_tv
+conversation:
+history:
+logbook:
+recorder:
+  purge_keep_days: 3
+logger:
+  default: info
+  logs:
+    homeassistant.components.mqtt: debug
+    homeassistant.components.shell_command: debug
+sun:
+
+mqtt:
+  broker: localhost
+  discovery: True
+  client_id: home-assistant
+  keepalive: 30
+  protocol: 3.1
+
+notify:
+  - name: push
+    platform: pushover
+    api_key: !secret pushover_api_key
+    user_key: !secret pushover_user_key
+
+tts:
+  - platform: amazon_polly
+    aws_access_key_id: !secret polly_access_key
+    aws_secret_access_key: !secret polly_secret
+    region_name: !secret polly_region
+
+media_player:
+  - platform: alexa
+    email: !secret alexa_user
+    password: !secret alexa_password
+    url: amazon.com
+  - platform: spotify
+    client_id: !secret spotify_client_id
+    client_secret: !secret spotify_client_secret
+
+emulated_hue:
+  exposed_domains:
+    - switch
+    - light
+
+homekit:
+  filter:
+    include_entities:
+      - input_boolean.homekit_presence
+
+device_tracker:
+  - platform: unifi_direct
+    host: !secret ap_host
+    username: !secret unifi_user
+    password: !secret unifi_password
+    track_new_devices: false
+    interval_seconds: 10
+    consider_home: 90
+    verify_ssl: False
+  - platform: traccar
+    host: !secret traccar_host
+    ssl: false
+    username: !secret traccar_username
+    password: !secret traccar_password
+    new_device_defaults:
+      track_new_devices: true
+
+zone:
+  - name: Near Home
+    latitude: !secret latitude
+    longitude: !secret longitude
+    radius: 1300
+    icon: mdi:home
+  - name: Work
+    latitude: !secret work_latitude
+    longitude: !secret work_longitude
+    radius: 800
+    icon: mdi:office-building
+
+proximity:
+  home: 
+    ignored_zones:
+      - work
+    devices:
+      - device_tracker.jeep_gps
+    tolerance: 50
+    unit_of_measurement: mi
+
+alarm_control_panel:
+  - platform: arlo
+    home_mode_name: JQ-Home
+  - platform: alarmdotcom
+    username: !secret adc_user
+    password: !secret adc_password
+    code: !secret adc_code
+
+zwave:
+  usb_path: /dev/ttyUSB0
+  device_config_domain:
+    light:
+      refresh_value: true
+
+nest:
+  client_id: !secret nest_id
+  client_secret: !secret nest_secret
+
+switch:
+  - platform: zwave
+  - platform: flux
+    lights:
+      - light.living_room
+    name: Flux
+    start_colortemp: 4000
+    sunset_colortemp: 2700
+    stop_colortemp: 1900
+    start_time: '7:00'
+    stop_time: '23:59'
+    transition: 20
+  - platform: template
+    switches:
+      alexa_bedtime:
+        friendly_name: "Alexa Bedtime"
+        value_template: "{{states.script.bedtime.state}}"
+        turn_on:
+          service: script.bedtime
+        turn_off:
+          service: script.bedtime
+  - platform: command_line
+    switches:
+      shop_lights:
+        friendly_name: Shop Lights
+        command_on: !secret shop_lights_switch_on_command
+        command_off: !secret shop_lights_switch_off_command
+  - platform: broadlink
+    host: !secret bedroom_broadcom_ip
+    mac: !secret bedroom_broadcom_mac
+    switches:
+      bedroom_fan:
+        friendly_name: Bedroom Fan
+        command_on: 'JgBYAAABJ5QSExE5ERQRFBE4ERQRFBETEjgRFBE4EjgRFBE4EjgRORE4ETkRFBETEjgRFBEUERMSExEUETkROBEUEjgTNhM3EQAFJAABKUsRAAxUAAEnSxEADQU='
+        command_off: 'JgBYAAABJ5QSExE5ERQRFBE4ERQRFBETEjgRFBE4EjgRFBE4EjgRORE4ETkRFBETEjgRFBEUERMSExEUETkROBEUEjgTNhM3EQAFJAABKUsRAAxUAAEnSxEADQU='
+      bedroom_fan_turbo:
+        friendly_name: Bedroom Fan Turbo
+        command_on: 'JgBQAAABJ5URExI4ERQRFBE4ERQRFBEUETgRFBE5ETgRFBE5ETgTNxEUETgTEhEUETgSExMSERQROBITETkROBITETkTNhI4EwAFJAABJ0sRAA0FAAAAAAAAAAA='
+        command_off: 'JgBYAAABJ5QSExE5ERMSExE5ERQRExITETkRFBE4ETkRFBE4ETkROBITETkROBEUETkRExITERQRORETEhMROREUETgRORE4EgAFJQABKEoSAAxTAAEoShIADQU='
+
+shell_command:
+  reboot_presence_pi_upstairs: !secret reboot_presence_pi_upstairs
+  reboot_presence_pi_main_floor: !secret reboot_presence_pi_main_floor
+  reboot_presence_pi_garage: !secret reboot_presence_pi_garage
+
+arlo:
+  username: !secret arlo_user
+  password: !secret arlo_password
+  scan_interval: 420
+
+camera:
+  - platform: arlo
+  - platform: generic
+    name: Prusa Camera
+    still_image_url: !secret octoprint_image_url
+  - platform: generic
+    name: Ender Camera
+    still_image_url: !secret octoprint2_image_url
+  - platform: foscam
+    ip: !secret foscam_ip
+    username: !secret foscam_user
+    password: !secret foscam_password
+
+cast:
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_secret
+    mode: daily
+
+octoprint:
+  - host: !secret octoprint_host
+    api_key: !secret octoprint_key
+    name: Prusa
+    sensors:
+      monitored_conditions:
+        - Current State
+        - Job Percentage
+        - Temperatures
+  - host: !secret octoprint2_host
+    api_key: !secret octoprint2_key
+    name: Ender
+    bed: true
+    number_of_tools: 1
+    sensors:
+      monitored_conditions:
+        - Current State
+        - Job Percentage
+        - Temperatures
+
+input_boolean:
+  away_mode:
+    name: Away Mode
+    icon: mdi:home
+  guest_mode:
+    name: Guest Mode
+    icon: mdi:account
+  homekit_presence:
+    name: HomeKit Presence
+    initial: on
+
+input_number:
+  bedtime_temperature:
+    name: Bedtime Temperature
+    icon: mdi:thermometer-lines
+    min: 66
+    max: 74
+    step: 1
+
+automation: !include_dir_merge_list automations/
+scene: !include scenes.yaml
+script: !include_dir_named scripts/
+group: !include groups.yaml
+sensor: !include sensors.yaml
+binary_sensor: !include binary_sensors.yaml

@@ -1,0 +1,5 @@
+alias: Notify
+sequence:
+  - service: notify.push
+    data_template:
+      message: "{{ message }}"

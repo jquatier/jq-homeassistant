@@ -1,0 +1,45 @@
+esphomeyaml:
+  name: shop_multisensor
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+  hostname: shop-multisensor
+
+mqtt:
+  broker: !secret mqtt_host
+  username: !secret mqtt_user
+  password: !secret mqtt_password
+
+logger:
+
+ota:
+
+sensor:
+  - platform: dht
+    model: DHT22
+    pin: D7
+    temperature:
+      name: "Shop Temperature"
+      unit_of_measurement: "°F"
+      filters:
+        - lambda: return x * (9.0/5.0) + 32.0;
+    humidity:
+      name: "Shop Humidity"
+  - platform: adc
+    pin: A0
+    name: "Shop Brightness"
+    unit_of_measurement: lux
+    filters:
+      - lambda: >-
+          return (x / 10000.0) * 2000000.0;
+
+binary_sensor:
+  - platform: gpio
+    pin: D5
+    name: "Shop Motion"
+    device_class: motion
+  - platform: status
+    name: "Shop Multisensor Status"

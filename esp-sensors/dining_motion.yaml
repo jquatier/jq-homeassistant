@@ -1,0 +1,23 @@
+esphomeyaml:
+  name: dining_motion_sensor
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+  hostname: dining-motion-sensor
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO2
+    name: "Dining Motion"
+    device_class: motion
+  - platform: status
+    name: "Dining Motion Sensor Status"

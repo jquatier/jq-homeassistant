@@ -1,0 +1,10 @@
+- alias: 'Wallpanel Wake'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.kitchen_motion_sensor
+    to: 'on'
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "wallpanel/jq/command"
+        payload: '{ "brightness": 255, "wake": true }'

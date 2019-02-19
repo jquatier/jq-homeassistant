@@ -1,0 +1,30 @@
+- alias: 'Enable First Morning Trigger'
+  trigger:
+    - platform: time
+      at: '5:00'
+  action: 
+    service: homeassistant.turn_on
+    entity_id: automation.first_morning_motion
+
+- alias: 'First Morning Motion'
+  initial_state: False
+  trigger:
+    platform: state
+    entity_id: binary_sensor.stairs_motion_sensor
+    to: 'on'
+  condition:
+    - condition: time
+      after: '5:00'
+      before: '12:00'
+  action:
+    - service: homeassistant.turn_off
+      entity_id: automation.first_morning_motion
+    - service: light.turn_on
+      entity_id: light.entry_lights_level
+    - service: scene.turn_on
+      entity_id: scene.main_lights_on
+    - service: script.morning_greeting
+    - delay:
+        seconds: 10
+    - service: switch.flux_update
+      entity_id: switch.flux

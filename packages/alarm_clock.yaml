@@ -1,0 +1,101 @@
+group:
+  alarm_clock:
+    name: Alarm Clock
+    control: hidden
+    entities: 
+      - automation.alarm_clock
+      - automation.alarm_gradual_wake
+      - input_datetime.alarm_time
+      - input_number.alarm_gradual_wake_minutes
+      - input_boolean.alarm_workday
+      - binary_sensor.workday_sensor
+
+input_boolean:
+  alarm_workday:
+    name: Work Days Only
+    initial: on
+    icon: mdi:calendar
+
+input_datetime:
+  alarm_time:
+    name: Alarm Time
+    has_date: false
+    has_time: true
+    initial: 06:15
+
+input_number:
+  alarm_gradual_wake_minutes:
+    name: Wake Minutes
+    icon: mdi:timer
+    min: 1
+    max: 59
+    step: 1
+
+sensor:
+  - platform: template
+    sensors:
+      alarm_gradual_wake_seconds:
+        friendly_name: 'Alarm Gradual Wake Seconds'
+        value_template: '{{ states("input_number.alarm_gradual_wake_minutes") | int * 60 }}'
+
+automation:
+  - alias: 'Alarm Clock'
+    trigger:
+      platform: template
+      value_template: "{{ states('sensor.time') == (states.input_datetime.alarm_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+    condition:
+      condition: or
+      conditions:
+        - condition: and
+          conditions:
+            - condition: state
+              entity_id: input_boolean.alarm_workday
+              state: 'on'
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+        - condition: state
+          entity_id: input_boolean.alarm_workday
+          state: 'off'
+    action:
+      service: notify.push
+      data_template:
+        message: 'Wake up! Today will be {{states.sensor.dark_sky_hourly_summary.state}} Air Quality: {{states.sensor.us_air_pollution_level.state}}'
+
+  - alias: 'Alarm Gradual Wake'
+    trigger:
+      platform: time_pattern
+      minutes: '/1'
+      seconds: 0  
+    condition:
+      condition: and
+      conditions:
+        - condition: template
+          value_template: "{{ ((now().strftime('%s') | int + states.sensor.alarm_gradual_wake_seconds.state | int) | timestamp_custom('%H:%M', false)) == (states.input_datetime.alarm_time.attributes.timestamp | int | timestamp_custom('%H:%M', False)) }}"
+        - condition: or
+          conditions:
+            - condition: and
+              conditions:
+                - condition: state
+                  entity_id: input_boolean.alarm_workday
+                  state: 'on'
+                - condition: state
+                  entity_id: binary_sensor.workday_sensor
+                  state: 'on'
+            - condition: state
+              entity_id: input_boolean.alarm_workday
+              state: 'off'
+    action:
+      - service: light.turn_on
+        entity_id: light.bedroom
+        data:
+          brightness: 1
+          rgb_color: [255, 253, 252]
+      - delay:
+          seconds: 5
+      - service: light.turn_on
+        entity_id: light.bedroom
+        data_template:
+          transition: '{{ states.sensor.alarm_gradual_wake_seconds.state | int }}'
+          brightness: 254
+          color_temp: 160

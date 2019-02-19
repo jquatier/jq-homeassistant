@@ -1,0 +1,90 @@
+- name: Main Lights On
+  entities:
+    group.main_lights:
+      state: on
+      transition: 6
+      brightness: 200
+    light.kitchen:
+      state: on
+      transition: 6
+      brightness: 200
+      rgb_color: [63, 79, 255]
+- name: Main Lights Dimmed
+  entities:
+    group.main_lights:
+      state: on
+      transition: 8
+      brightness: 80
+- name: Media Lighting
+  entities:
+    light.kitchen_lights_level:
+      state: off
+      transition: 8
+    light.dining_room_light_level:
+      state: off
+      transition: 8
+    light.entry_lights_level:
+      state: off
+      transition: 8
+    light.track_lights_level:
+      state: on
+      transition: 8
+      brightness: 70
+    light.living_room_lamp_1:
+      state: off
+      transition: 8
+    light.living_room_lamp_2:
+      state: on
+      transition: 8
+      brightness: 50
+- name: Media Lighting Up
+  entities:
+    light.kitchen_lights_level:
+      state: on
+      transition: 8
+      brightness: 120
+    light.track_lights_level:
+      state: on
+      transition: 8
+    light.living_room_lamp_1:
+      state: on
+      transition: 8
+      brightness: 150
+- name: All Lights Off
+  entities:
+    switch.shop_lights:
+      state: off
+    switch.flux:
+      state: off
+    group.all_house_lights:
+      state: off
+      transition: 8
+- name: Bedtime
+  entities:
+    light.kitchen:
+      state: on
+      transition: 2
+      brightness: 25
+      rgb_color: [255, 255, 255]
+    light.living_room:
+      state: off
+      transition: 6
+    light.kitchen_lights_level:
+      state: off
+      transition: 6
+    light.track_lights_level:
+      state: off
+      transition: 6
+    light.entry_lights_level:
+      state: off
+      transition: 6
+    light.bedroom:
+      state: on
+      transition: 10
+      brightness: 50
+      rgb_color: [158, 108, 38]
+- name: Bedroom Lights Out
+  entities:
+    light.bedroom:
+      state: off
+      transition: 600
