@@ -1,10 +1,11 @@
 # JQ Home Assistant Configuration
 My configuration for Home Assistant (https://home-assistant.io/)
 
-## Sensors (esphomeyaml)
+## Custom Sensors / Devices (esphomeyaml)
 See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyaml) configuration
  * 4x Multisensor (temp + humidity + motion) ([BRUH-based](https://esphomelib.com/esphomeyaml/cookbook/bruh.html))
  * Garage Car Presence Sensor (HC-SR04 ultrasonic)
+ * Mini Blinds (stepper motor driver)
 
 ## Devices in use:
 
@@ -17,6 +18,7 @@ See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyam
  * Text-to-speech - Alexa announcements via Echo Dots and Echo Spot
  * Ubiquiti Unifi - presence detection
  * Apple HomeKit - presence detection bridge
+ * Traccar - vehicle tracking
  * Nest - climate control
  * Flux - lighting temperature (via Hue)
  * Emulated Hue - lighting / script control via Amazon Alexa

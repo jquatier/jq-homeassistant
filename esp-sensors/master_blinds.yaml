@@ -1,0 +1,44 @@
+esphomeyaml:
+  name: master_blinds
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+  hostname: master-blinds
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: status
+    name: "Master Blinds Status"
+
+stepper:
+  - platform: uln2003
+    id: stepper
+    pin_a: D5
+    pin_b: D6
+    pin_c: D7
+    pin_d: D8
+    max_speed: 500 steps/s
+    sleep_when_done: true
+
+cover:
+  - platform: template
+    name: "Master Blinds"
+    open_action:
+      then:
+        - stepper.set_target:
+            id: stepper
+            target: 8000
+    close_action:
+      then:
+        - stepper.set_target:
+            id: stepper
+            target: 0
+    optimistic: true
