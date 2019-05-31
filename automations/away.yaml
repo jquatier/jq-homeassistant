@@ -49,6 +49,8 @@
       entity_id: input_boolean.away_mode
       to: 'on'
   action:
+    - service: cover.close_cover
+      entity_id: cover.master_blinds
     - service: scene.turn_on
       entity_id: scene.all_lights_off
     - service: alarm_control_panel.alarm_arm_away

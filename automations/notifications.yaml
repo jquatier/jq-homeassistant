@@ -10,7 +10,6 @@
       data:
         message: "House is too cold. Temperature is {{ states.climate.living_room_nest.attributes.current_temperature }}"
 
-
 - alias: 'Low Battery Alert'
   trigger:
     - platform: time
@@ -28,33 +27,15 @@
     data:
       message: "Low battery detected for at least one sensor"
 
-- alias: 'GPS Updates Missing'
+- alias: 'New Device'
   hide_entity: True
   trigger:
-    - platform: state
-      entity_id: binary_sensor.gps_updates_missing
-      to: 'on'
+    - platform: event
+      event_type: device_tracker_new_device
   action:
     service: script.notify
-    data:
-      message: "GPS Updates Missing"
-
-- alias: 'Car Approaching'
-  hide_entity: True
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.jeep_presence
-      to: 'on'
-  condition:
-    - condition: state
-      entity_id: binary_sensor.garage_car_present
-      state: 'off'
-      for:
-        minutes: 5
-  action:
-    service: script.notify
-    data:
-      message: "Car Approaching"
+    data_template:
+      message: "New device detected: {{trigger.event.data.host_name}}"
 
 - alias: 'Internet Failure'
   trigger:

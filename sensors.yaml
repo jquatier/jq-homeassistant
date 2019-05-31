@@ -1,5 +1,3 @@
-- platform: fastdotcom
-
 - platform: moon
 
 - platform: uptime
@@ -36,8 +34,6 @@
 - platform: ups
   username: !secret ups_username
   password: !secret ups_password
-  update_interval:
-    hours: 1
 
 - platform: template
   sensors:
@@ -66,6 +62,12 @@
     - type: memory_use_percent
     - type: processor_use
 
+- platform: rest
+  scan_interval: 86400
+  resource: https://api.ipify.org/
+  name: External IP
+  value_template: '{{ value }}'
+
 - platform: time_date
   display_options:
     - 'time'
@@ -85,35 +87,8 @@
   type: max
   round_digits: 0
   entity_ids:
-    - sensor.garage_presence
     - sensor.main_floor_presence
     - sensor.upstairs_presence
-
-# presence garage
-
-- platform: template
-  sensors:
-    garage_presence:
-      friendly_name: 'Garage Presence'
-      unit_of_measurement: '%'
-      value_template: "{{ states.sensor.garage_presence_confidence.state | int }}"
-      icon_template: "{{ 'mdi:signal-off' if is_state('sensor.garage_presence_confidence', 'unavailable') else 'mdi:signal'}}"
-
-- platform: mqtt
-  state_topic: !secret presence_topic_garage
-  value_template: '{{ value_json.confidence }}'
-  unit_of_measurement: '%'
-  name: 'Garage Presence Confidence'
-  json_attributes:
-    - id
-    - name
-    - rssi
-    - version
-    - manufacturer
-    - type
-    - timestamp
-    - retained
-    - confidence
 
 # presence main floor
 

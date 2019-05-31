@@ -2,7 +2,7 @@ alias: Morning Greeting
 sequence:
   - service: media_player.alexa_tts
     data_template:
-      entity_id: media_player.jacobs_echo_dot
+      entity_id: media_player.jacob_s_echo_dot
       message: >
         Good Morning. Today is {{states.sensor.day_of_the_week.state}}.
         {% if is_state('binary_sensor.workday_sensor', 'on') %}

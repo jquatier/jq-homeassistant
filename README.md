@@ -1,8 +1,8 @@
 # JQ Home Assistant Configuration
 My configuration for Home Assistant (https://home-assistant.io/)
 
-## Custom Sensors / Devices (esphomeyaml)
-See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyaml) configuration
+## Custom Sensors / Devices (esphome)
+See `/esp-sensors` directory for [esphome](https://esphome.io/) configuration
  * 4x Multisensor (temp + humidity + motion) ([BRUH-based](https://esphomelib.com/esphomeyaml/cookbook/bruh.html))
  * Garage Car Presence Sensor (HC-SR04 ultrasonic)
  * Mini Blinds (stepper motor driver)
@@ -39,7 +39,7 @@ See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyam
 Presence forms in use:
 * WiFi detection via Ubiquiti access point
 * HomeKit GPS based presence
-* Car presence sensor in garage (esphomeyaml based)
+* Car presence sensor in garage (esphome based)
 * Car GPS Tracker via Traccar
 
 ## Automations:

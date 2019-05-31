@@ -14,25 +14,17 @@
         {{ is_state('sensor.day_of_the_week', 'Wednesday') }} 
 
 - platform: template
-  sensors: 
-    gps_updates_missing:
-      friendly_name: GPS Updates Missing
-      entity_id: sensor.time
-      value_template: >-
-        {{ (states.device_tracker.jeep_gps.last_updated is defined and (as_timestamp(now())-as_timestamp(states.device_tracker.jeep_gps.last_updated)) > 86400) }}
-
-- platform: template
   sensors:
-    wifi_presence:
-      friendly_name: "WiFi Presence"
+    phone_presence:
+      friendly_name: "Phone Presence"
       device_class: presence
       value_template: >-
-        {{ is_state('device_tracker.iphone', 'home') }} 
-    bluetooth_presence:
-      friendly_name: "Bluetooth Presence"
+        {{ states.sensor.bluetooth_presence_probability.state | int > 50 or is_state('device_tracker.iphone', 'home') }}
+    car_presence:
+      friendly_name: "Car Presence"
       device_class: presence
       value_template: >-
-        {{ states.sensor.bluetooth_presence_probability.state | int > 50 }}
+        {{ is_state('binary_sensor.garage_car_present', 'on') or is_state('binary_sensor.jeep_presence', 'on') or is_state('device_tracker.car_gps', 'home') }}
     homekit_presence:
       friendly_name: "HomeKit Presence"
       device_class: presence
@@ -55,9 +47,9 @@
   prior: 0.15
   name: Bayesian Presence
   device_class: presence
-  probability_threshold: 0.60
+  probability_threshold: 0.50
   observations:
-    - entity_id: 'binary_sensor.wifi_presence'
+    - entity_id: 'binary_sensor.phone_presence'
       prob_given_true: 0.6
       prob_given_false: 0.05
       platform: 'state'
@@ -67,13 +59,8 @@
       prob_given_false: 0.05
       platform: 'state'
       to_state: 'on'
-    - entity_id: 'binary_sensor.garage_car_present'
+    - entity_id: 'binary_sensor.car_presence'
       prob_given_true: 0.25
-      prob_given_false: 0.05
-      platform: 'state'
-      to_state: 'on'
-    - entity_id: 'binary_sensor.jeep_presence'
-      prob_given_true: 0.6
       prob_given_false: 0.05
       platform: 'state'
       to_state: 'on'

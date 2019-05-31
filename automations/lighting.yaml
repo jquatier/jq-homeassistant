@@ -215,6 +215,10 @@
     - platform: state
       entity_id: binary_sensor.shop_motion
       to: 'on'
+    - platform: state
+      entity_id: binary_sensor.garage_car_present
+      from: 'off'
+      to: 'on'
   condition:
     condition: and
     conditions:

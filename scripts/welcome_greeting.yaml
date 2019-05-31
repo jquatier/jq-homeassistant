@@ -2,7 +2,7 @@ alias: Welcome Greeting
 sequence:
   - service: media_player.alexa_tts
     data_template:
-      entity_id: media_player.jacobs_echo_dot
+      entity_id: media_player.jacob_s_echo_dot
       message: >
         Welcome Home, 
         {% if states.sensor.deliveries.state | int > 0  %}

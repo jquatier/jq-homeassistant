@@ -1,0 +1,12 @@
+- alias: 'Garage TV Off'
+  hide_entity: True
+  trigger:
+    - platform: state
+      entity_id: media_player.garage
+      from: 'playing'
+      to: 'off'
+      for:
+        hours: 1
+  action: 
+    - service: switch.turn_off
+      entity_id: switch.garage_tv

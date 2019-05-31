@@ -86,6 +86,22 @@ sensor.mp_smart_plug_1_power_factor:
   hidden: true
 sensor.mp_smart_plug_1_energy_kvah:
   hidden: true
+sensor.mp_smart_plug_2_current:
+  hidden: true
+sensor.mp_smart_plug_2_energy:
+  hidden: true
+sensor.mp_smart_plug_2_power:
+  hidden: true
+sensor.mp_smart_plug_2_previous_reading:
+  hidden: true
+sensor.mp_smart_plug_2_previous_read:
+  hidden: true
+sensor.mp_smart_plug_2_voltage:
+  hidden: true
+sensor.mp_smart_plug_2_power_factor:
+  hidden: true
+sensor.mp_smart_plug_2_energy_kvah:
+  hidden: true
 sensor.jeep_presence_signal:
   hidden: true
 sensor.jeep_presence_uptime:

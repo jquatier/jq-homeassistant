@@ -3,17 +3,15 @@ presence:
   control: hidden
   entities:
     - binary_sensor.presence
-    - binary_sensor.wifi_presence
-    - binary_sensor.bluetooth_presence
+    - binary_sensor.phone_presence
     - binary_sensor.homekit_presence
+    - binary_sensor.car_presence
     - binary_sensor.motion_presence
     - binary_sensor.bayesian_presence
     - sensor.bayesian_presence_probability
     - sensor.bluetooth_presence_probability
     - sensor.upstairs_presence
     - sensor.main_floor_presence
-    - sensor.garage_presence
-    - binary_sensor.garage_car_present
 controls:
   name: Controls
   control: hidden
@@ -28,6 +26,7 @@ main_lights:
     - light.track_lights_level
     - light.living_room
     - light.kitchen
+    - light.kitchen_accent
 all_house_lights:
   name: All House Lights
   entities:
@@ -40,6 +39,7 @@ all_house_lights:
     - light.dining_room_light_level
     - light.entry_lights_level
     - light.floor_lamp_level
+    - light.kitchen_accent
 environment:
   name: Environment
   entities:
@@ -114,16 +114,19 @@ battery_levels:
     - sensor.battery_entry_motion
     - sensor.battery_stairs_motion
     - sensor.battery_shop_lights_switch
-sensor_status:
-  name: Sensor Status
+device_status:
+  name: Device Status
   control: hidden
   entities:
     - binary_sensor.garage_presence_sensor_status
     - binary_sensor.bedroom_multisensor_status
+    - binary_sensor.master_blinds_status
     - binary_sensor.kitchen_multisensor_status
     - binary_sensor.dining_motion_sensor_status
     - binary_sensor.shop_multisensor_status
     - binary_sensor.alarm_controller_status
+    - binary_sensor.living_hasp_connected
+    - binary_sensor.master_hasp_connected
 motion_sensors:
   name: Motion Sensors
   control: hidden

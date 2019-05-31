@@ -60,7 +60,7 @@ automation:
     action:
       service: notify.push
       data_template:
-        message: 'Wake up! Today will be {{states.sensor.dark_sky_hourly_summary.state}} Air Quality: {{states.sensor.us_air_pollution_level.state}}'
+        message: 'Wake up! Today will be {{states.sensor.dark_sky_hourly_summary.state}}'
 
   - alias: 'Alarm Gradual Wake'
     trigger:
@@ -86,6 +86,10 @@ automation:
               entity_id: input_boolean.alarm_workday
               state: 'off'
     action:
+      - service: cover.open_cover
+        entity_id: cover.master_blinds
+      - delay:
+          minutes: 2
       - service: light.turn_on
         entity_id: light.bedroom
         data:

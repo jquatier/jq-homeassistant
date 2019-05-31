@@ -66,6 +66,8 @@
       transition: 2
       brightness: 25
       rgb_color: [255, 255, 255]
+    light.kitchen_accent:
+      state: off
     light.living_room:
       state: off
       transition: 6

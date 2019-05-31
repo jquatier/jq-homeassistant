@@ -40,10 +40,23 @@
       entity_id: input_boolean.away_mode
       to: 'off'
   action:
+    - service: switch.turn_on
+      entity_id: switch.alarm_controller_disarm
     - service: alarm_control_panel.alarm_disarm
       data:
         entity_id: alarm_control_panel.alarm_com
         code: !secret adc_code
+
+- alias: "Close To Home Disarm"
+  trigger:
+    - platform: numeric_state
+      entity_id: proximity.home
+      value_template: '{{ states.proximity.home.state | float }}'
+      below: 1000
+  condition: 
+    - condition: template
+      value_template: '{{ states.proximity.home.attributes.dir_of_travel == "towards" }}'
+  action:
     - service: switch.turn_on
       entity_id: switch.alarm_controller_disarm
 

@@ -2,9 +2,15 @@ homeassistant:
   packages: !include_dir_named packages
   name: JQ Home
   auth_providers:
-   - type: homeassistant
-   - type: legacy_api_password
-   - type: trusted_networks
+    - type: homeassistant
+    - type: legacy_api_password
+      api_password: !secret http_api_password
+    - type: trusted_networks
+      trusted_networks:
+        - 127.0.0.1
+        - ::1
+        - !secret home_subnet
+        - fd00::/8
   latitude: !secret latitude
   longitude: !secret longitude
   elevation: !secret elevation
@@ -21,12 +27,6 @@ system_health:
 map:
 config:
 http:
-  api_password: !secret http_api_password
-  trusted_networks:
-    - 127.0.0.1
-    - ::1
-    - !secret home_subnet
-    - fd00::/8
 auth:
 updater:
 discovery:
@@ -65,13 +65,21 @@ tts:
     region_name: !secret polly_region
 
 media_player:
-  - platform: alexa
-    email: !secret alexa_user
-    password: !secret alexa_password
-    url: amazon.com
   - platform: spotify
     client_id: !secret spotify_client_id
     client_secret: !secret spotify_client_secret
+
+alexa_media:
+  accounts:
+    - email: !secret alexa_user
+      password: !secret alexa_password
+      url: amazon.com
+      exclude_devices:
+        - "This Device"
+        - "Jacob's Alexa Apps"
+        - "Jacob's Fire TV"
+        - "My Dash"
+        - Garage
 
 emulated_hue:
   exposed_domains:
@@ -91,7 +99,6 @@ device_tracker:
     track_new_devices: false
     interval_seconds: 10
     consider_home: 90
-    verify_ssl: False
   - platform: traccar
     host: !secret traccar_host
     ssl: false
@@ -117,9 +124,9 @@ proximity:
     ignored_zones:
       - work
     devices:
-      - device_tracker.jeep_gps
+      - device_tracker.car_gps
     tolerance: 50
-    unit_of_measurement: mi
+    unit_of_measurement: m
 
 alarm_control_panel:
   - platform: arlo
@@ -160,12 +167,33 @@ switch:
           service: script.bedtime
         turn_off:
           service: script.bedtime
+  - platform: template
+    switches:
+      alexa_blinds:
+        friendly_name: "Alexa Blinds"
+        value_template: "{{ is_state('cover.master_blinds', 'open') }}"
+        turn_on:
+          service: cover.open_cover
+          data:
+            entity_id: cover.master_blinds
+        turn_off:
+          service: cover.close_cover
+          data:
+            entity_id: cover.master_blinds
   - platform: command_line
     switches:
       shop_lights:
         friendly_name: Shop Lights
         command_on: !secret shop_lights_switch_on_command
         command_off: !secret shop_lights_switch_off_command
+  - platform: broadlink
+    host: !secret garage_broadcom_ip
+    mac: !secret garage_broadcom_mac
+    switches:
+      garage_tv:
+        friendly_name: Garage TV
+        command_on: 'JgBgAAABK5EWDxYPFjUVEBUQFRAVEBUQFTUWNBYPFjUVNRY0FjUVNRYPFg8WDxY0Fg8WDxYPFg8WNRU1FjQWDxY1FTUWNBY1FQAFHgABLEcWAAxeAAErRxYADF4AAStHFgANBQAAAAAAAAAA'
+        command_off: 'JgBgAAABK5EWDxYPFjUVEBUQFRAVEBUQFTUWNBYPFjUVNRY0FjUVNRYPFg8WDxY0Fg8WDxYPFg8WNRU1FjQWDxY1FTUWNBY1FQAFHgABLEcWAAxeAAErRxYADF4AAStHFgANBQAAAAAAAAAA'
   - platform: broadlink
     host: !secret bedroom_broadcom_ip
     mac: !secret bedroom_broadcom_mac
@@ -179,6 +207,11 @@ switch:
         command_on: 'JgBQAAABJ5URExI4ERQRFBE4ERQRFBEUETgRFBE5ETgRFBE5ETgTNxEUETgTEhEUETgSExMSERQROBITETkROBITETkTNhI4EwAFJAABJ0sRAA0FAAAAAAAAAAA='
         command_off: 'JgBYAAABJ5QSExE5ERMSExE5ERQRExITETkRFBE4ETkRFBE4ETkROBITETkROBEUETkRExITERQRORETEhMROREUETgRORE4EgAFJQABKEoSAAxTAAEoShIADQU='
 
+light:
+  - platform: switch
+    name: Kitchen Accent
+    entity_id: switch.kitchen_accent_light
+
 shell_command:
   reboot_presence_pi_upstairs: !secret reboot_presence_pi_upstairs
   reboot_presence_pi_main_floor: !secret reboot_presence_pi_main_floor
@@ -191,9 +224,10 @@ arlo:
 
 camera:
   - platform: arlo
-  - platform: generic
+  - platform: mjpeg
     name: Prusa Camera
     still_image_url: !secret octoprint_image_url
+    mjpeg_url: !secret octoprint_mjpeg_url
   - platform: generic
     name: Ender Camera
     still_image_url: !secret octoprint2_image_url
@@ -208,6 +242,8 @@ weather:
   - platform: darksky
     api_key: !secret darksky_secret
     mode: daily
+
+fastdotcom:
 
 octoprint:
   - host: !secret octoprint_host
