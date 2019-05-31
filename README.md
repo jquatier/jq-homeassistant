@@ -46,7 +46,7 @@ Presence forms in use:
 
 ### Morning
 
-* Bring up the bedroom lights in daylight color gradually 30 min prior to wake up time (set via home assistant controls).
+* Open the blinds and bring up the bedroom lights in daylight color gradually 15-30 min prior to wake up time (set via home assistant controls).
 * On first motion in kitchen, bring up the lights, announce the weather forecast over kitchen speakers. If the current day is a work day, announce the travel time to work using Google travel time. Remind if a package is arriving.
 
 ### Away
