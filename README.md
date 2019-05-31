@@ -6,6 +6,7 @@ See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyam
  * 4x Multisensor (temp + humidity + motion) ([BRUH-based](https://esphomelib.com/esphomeyaml/cookbook/bruh.html))
  * Garage Car Presence Sensor (HC-SR04 ultrasonic)
  * Mini Blinds (stepper motor driver)
+ * Power Strip (SM-SO301, flashed with tuya-convert)
 
 ## Devices in use:
 
@@ -36,10 +37,10 @@ See `/esp-sensors` directory for [esphomeyaml](https://esphomelib.com/esphomeyam
 ## Presence Detection
 
 Presence forms in use:
-* Pi Zero W's deployed with Bluetooth monitoring via MQTT & [monitor](https://github.com/andrewjfreyer/monitor)
 * WiFi detection via Ubiquiti access point
 * HomeKit GPS based presence
 * Car presence sensor in garage (esphomeyaml based)
+* Car GPS Tracker via Traccar
 
 ## Automations:
 
@@ -58,7 +59,7 @@ Presence forms in use:
 
 * When arriving home, turn on entry lights for 10 minutes.
 * Disarm Arlo motion detection notifications
-* On first motion in kitchen after returning from away mode, play welcome message and bring up the main lights.
+* On first motion in kitchen after returning from away mode, play welcome message and bring up the main lights. Remind me to take out the trash, or get a package.
 
 ### Night
 
