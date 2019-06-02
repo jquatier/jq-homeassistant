@@ -4,6 +4,7 @@ substitutions:
 esphome:
   name: garage_power_strip
   platform: ESP8266
+  esp8266_restore_from_flash: true
   board: esp01_1m
   on_boot:
     then:
