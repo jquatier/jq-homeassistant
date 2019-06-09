@@ -1,0 +1,72 @@
+esphomeyaml:
+  name: ttgo_pir_camera
+  platform: ESP32
+  board: esp-wrover-kit
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: gpio
+    pin: GPIO33
+    name: TTGO Camera Motion
+    id: pir
+    device_class: motion
+    on_state:
+      then: 
+        - component.update: camera_display
+
+esp32_camera:
+  name: TTGO PIR Camera
+  external_clock:
+    pin: GPIO32
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO13
+    scl: GPIO12
+  data_pins: [GPIO5, GPIO14, GPIO4, GPIO15, GPIO18, GPIO23, GPIO36, GPIO39]
+  vsync_pin: GPIO27
+  href_pin: GPIO25
+  pixel_clock_pin: GPIO19
+  power_down_pin: GPIO26
+  resolution: 800x600
+  jpeg_quality: 10
+  vertical_flip: false
+  horizontal_mirror: false
+
+i2c:
+  sda: GPIO21
+  scl: GPIO22
+
+font:
+  - file: "Arial.ttf"
+    id: font
+    size: 14
+
+time:
+  - platform: homeassistant
+    id: homeassistant_time
+
+text_sensor:
+  - platform: template
+    id: ip_address
+    lambda: 'return {WiFi.localIP().toString().c_str()};'
+
+display:
+  - platform: ssd1306_i2c
+    id: camera_display
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+      it.printf(64, 0, id(font), TextAlign::TOP_CENTER, "%s", id(ip_address).state.c_str());
+      if (id(pir).state) {
+        it.printf(64, 32, id(font), TextAlign::CENTER, "%s", "MOTION");
+      }
+      it.strftime(64, 64, id(font), TextAlign::BASELINE_CENTER, "%H:%M", id(homeassistant_time).now());

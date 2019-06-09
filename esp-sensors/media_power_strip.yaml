@@ -1,0 +1,109 @@
+substitutions:
+  name: Media Power Strip
+
+esphome:
+  name: media_power_strip
+  platform: ESP8266
+  esp8266_restore_from_flash: true
+  board: esp01_1m
+  on_boot:
+    then:
+      - switch.turn_on: blue_led
+  on_shutdown:
+    then:
+      - switch.turn_off: blue_led
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+
+api:
+
+logger:
+
+ota:
+
+status_led:
+  pin:
+    number: GPIO3
+    inverted: true
+
+binary_sensor:
+  - platform: gpio
+    id: button
+    pin:
+      number: GPIO5
+      mode: INPUT_PULLUP
+      inverted: true
+    on_multi_click:
+    - timing:
+        - ON for 1s to 4s
+        - OFF for at least 0.5s
+      then:
+        - logger.log: "Single Long Clicked"
+        - switch.turn_off: usb_relay
+        - delay: 500ms
+        - switch.turn_off: plug_1_relay
+        - delay: 500ms
+        - switch.turn_off: plug_2_relay
+        - delay: 500ms
+        - switch.turn_off: plug_3_relay
+        - delay: 500ms
+        - switch.turn_off: plug_4_relay
+    - timing:
+        - ON for at most 1s
+        - OFF for at least 0.5s
+      then:
+        - logger.log: "Single Short Clicked"
+        - switch.turn_on: usb_relay
+        - delay: 500ms
+        - switch.turn_on: plug_1_relay
+        - delay: 500ms
+        - switch.turn_on: plug_2_relay
+        - delay: 500ms
+        - switch.turn_on: plug_3_relay
+        - delay: 500ms
+        - switch.turn_on: plug_4_relay
+
+  - platform: status
+    name: "$name Status"
+
+switch:
+  - platform: gpio
+    id: blue_led
+    pin:
+      number: GPIO0
+      inverted: true
+
+  - platform: gpio
+    id: usb_relay
+    name: "$name USB Ports"
+    pin: GPIO16
+
+  - platform: gpio
+    id: plug_1_relay
+    name: "$name Plug 1"
+    pin:
+      number: GPIO4
+      inverted: true
+
+  - platform: gpio
+    id: plug_2_relay
+    name: "$name Plug 2"
+    pin:
+      number: GPIO13
+      inverted: true
+  
+  - platform: gpio
+    id: plug_3_relay
+    name: "$name Plug 3"
+    pin:
+      number: GPIO12
+      inverted: true
+  
+  - platform: gpio
+    id: plug_4_relay
+    name: "$name Plug 4"
+    pin:
+      number: GPIO14
+      inverted: true

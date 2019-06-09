@@ -1,0 +1,44 @@
+substitutions:
+  name: Night Light 1
+
+esphome:
+  name: night_light_1
+  platform: ESP8266
+  esp8266_restore_from_flash: true
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: gpio
+    id: button
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+    on_press:
+      then:
+        - switch.toggle: relay_1
+
+switch:
+  - platform: gpio
+    id: relay_1
+    name: "$name Plug"
+    pin: GPIO15
+
+light:
+  - platform: monochromatic
+    name: "$name LED"
+    output: led_1
+
+output:
+  - platform: esp8266_pwm
+    id: led_1
+    pin: GPIO12
