@@ -35,6 +35,10 @@
   username: !secret ups_username
   password: !secret ups_password
 
+- platform: fedex
+  username: !secret fedex_username
+  password: !secret fedex_password
+
 - platform: template
   sensors:
     deliveries:
@@ -47,7 +51,7 @@
              0
           {% endif %}
         {% endmacro %}
-        {{ delivered(states.sensor.ups) | int }}
+        {{ delivered(states.sensor.ups) | int + delivered(states.sensor.fedex) | int }}
 
 - platform: airvisual
   api_key: !secret airvisual_key

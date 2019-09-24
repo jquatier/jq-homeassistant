@@ -245,6 +245,10 @@ weather:
 
 fastdotcom:
 
+transmission:
+  host: !secret transmission_host
+  turtle_mode: true
+
 octoprint:
   - host: !secret octoprint_host
     api_key: !secret octoprint_key

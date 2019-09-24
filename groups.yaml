@@ -40,6 +40,9 @@ all_house_lights:
     - light.entry_lights_level
     - light.floor_lamp_level
     - light.kitchen_accent
+    - light.main_floor_can_1
+    - light.main_floor_can_2
+    - light.night_light_1_led
 environment:
   name: Environment
   entities:
