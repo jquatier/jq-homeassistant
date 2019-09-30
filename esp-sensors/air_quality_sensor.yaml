@@ -1,0 +1,82 @@
+esphome:
+  name: air_quality_sensor
+  platform: ESP8266
+  board: nodemcuv2
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: status
+    name: "Air Quality Sensor Status"
+
+i2c:
+  sda: D5
+  scl: D6
+
+display:
+  - platform: lcd_pcf8574
+    dimensions: 18x2
+    address: 0x27
+    lambda: |-
+      it.printf(0, 0, "AQI 2.5: %.1f", id(aqi25).state);
+      it.printf(0, 1, "AQI 10.0: %.1f", id(aqi10).state);
+
+uart:
+  rx_pin: D1
+  tx_pin: D2
+  baud_rate: 9600
+
+sensor:
+  - platform: sds011
+    pm_2_5:
+      id: pm25
+    pm_10_0:
+      id: pm10
+    update_interval: 5min
+  - platform: template
+    id: aqi25
+    name: "Air Quality Index 2.5"
+    icon: mdi:chemical-weapon
+    unit_of_measurement: AQI
+    accuracy_decimals: 2
+    lambda: |-
+      // NOTE: this calculation logic varies by location
+      if(isnan(id(pm25).state)) return id(pm25).state;
+      else if (id(pm25).state<=12.0) return (50.-0.)/(12.0-0.)*(id(pm25).state-0.0)+0.;
+      else if (id(pm25).state<=35.4) return (100.-50.)/(35.4-12.0)*(id(pm25).state-12.0)+50.;
+      else if (id(pm25).state<=55.4) return (150.-100.)/(55.4-35.4)*(id(pm25).state-35.4)+100.;
+      else if (id(pm25).state<=150.4) return (200.-150.)/(150.4-55.4)*(id(pm25).state-55.4)+150.;
+      else if (id(pm25).state<=250.4) return (300.-200.)/(250.4-150.4)*(id(pm25).state-150.4)+200.;
+      else if (id(pm25).state<=350.4) return (400.-300.)/(350.4-250.4)*(id(pm25).state-250.4)+300.;
+      else if (id(pm25).state<=500.4) return (500.-400.)/(500.4-350.4)*(id(pm25).state-350.4) +400.;
+      else return 501.;
+    filters:
+      - filter_out: nan
+  - platform: template
+    id: aqi10
+    name: "Air Quality Index 10.0"
+    icon: mdi:chemical-weapon
+    unit_of_measurement: AQI
+    accuracy_decimals: 2
+    lambda: |-
+      // NOTE: this calculation logic varies by location
+      if(isnan(id(pm10).state)) return id(pm25).state;
+      else if (id(pm10).state<=54.) return (50.-0.)/(54.-0.)*(id(pm10).state-0.)+0.;
+      else if (id(pm10).state<=154.) return (100.-50.)/(154.-54.)*(id(pm10).state-54.)+50.;
+      else if (id(pm10).state<=254.) return (150.-100.)/(254.-154.)*(id(pm10).state-154.)+100.;
+      else if (id(pm10).state<=354.) return (200.-150.)/(354.-254.)*(id(pm10).state-254.)+150.;
+      else if (id(pm10).state<=424.) return (300.-200.)/(424.-354.)*(id(pm10).state-354.)+200.;
+      else if (id(pm10).state<=504.) return (400-300)/(504.-424.)*(id(pm10).state-424.);
+      else if (id(pm10).state<=604.) return (500.-400.)/(604.-504.)*(id(pm10).state-504.)*400.;
+      else return 501.;
+    filters:
+      - filter_out: nan
+  

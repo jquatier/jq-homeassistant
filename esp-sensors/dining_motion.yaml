@@ -1,4 +1,4 @@
-esphomeyaml:
+esphome:
   name: dining_motion_sensor
   platform: ESP8266
   board: d1_mini
@@ -6,7 +6,6 @@ esphomeyaml:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_psk
-  hostname: dining-motion-sensor
 
 api:
 

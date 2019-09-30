@@ -1,4 +1,4 @@
-esphomeyaml:
+esphome:
   name: garage_car_presence
   platform: ESP8266
   board: nodemcuv2
@@ -6,12 +6,8 @@ esphomeyaml:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_psk
-  hostname: garage_car_presence
 
-mqtt:
-  broker: !secret mqtt_host
-  username: !secret mqtt_user
-  password: !secret mqtt_password
+api:
 
 logger:
 
@@ -23,8 +19,6 @@ binary_sensor:
   - platform: template
     name: "Garage Car Present"
     device_class: presence
-    filters:
-      - heartbeat: 20min
     on_press: 
       then: 
         - light.turn_on:
@@ -57,8 +51,6 @@ sensor:
     trigger_pin: D5
     echo_pin: D6
     name: "Garage Ultrasonic"
-    timeout_time: 10s
-    expire_after: 5min
     filters:
       - sliding_window_moving_average:
           window_size: 5
@@ -78,7 +70,6 @@ output:
 light:
   - platform: rgb
     id: status_led
-    discovery: false
     internal: true
     name: "Status Light"
     red: redgpio
