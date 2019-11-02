@@ -1,12 +1,14 @@
 alias: Morning Greeting
 sequence:
-  - service: media_player.alexa_tts
+  - service: notify.alexa_media
     data_template:
-      entity_id: media_player.jacob_s_echo_dot
+      target: media_player.jacob_s_echo_dot
+      data:
+        type: tts
       message: >
         Good Morning. Today is {{states.sensor.day_of_the_week.state}}.
         {% if is_state('binary_sensor.workday_sensor', 'on') %}
         Travel time to work is looking like {{states.sensor.travel_time_to_work.state}} minutes.
         {% endif %}
         It's currently {{states.sensor.dark_sky_summary.state}} and {{states.sensor.dark_sky_temperature.state|round}} degrees. 
-        Today will be {{states.sensor.dark_sky_hourly_summary.state|replace(".", "")}}, with a high of {{states.sensor.dark_sky_daytime_high_temperature_0.state|round}} degrees.
+        Today will be {{states.sensor.dark_sky_hourly_summary.state|replace(".", "")}}, with a high of {{states.sensor.dark_sky_daytime_high_temperature_0d.state|round}} degrees.

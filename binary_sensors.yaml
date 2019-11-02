@@ -3,8 +3,8 @@
 
 - platform: ping
   name: Internet Connection
-  host: google.com
-  count: 2
+  host: 8.8.8.8
+  #scan_interval: 600
 
 - platform: template
   sensors:
@@ -24,7 +24,7 @@
       friendly_name: "Car Presence"
       device_class: presence
       value_template: >-
-        {{ is_state('binary_sensor.garage_car_present', 'on') or is_state('binary_sensor.jeep_presence', 'on') or is_state('device_tracker.car_gps', 'home') }}
+        {{ is_state('binary_sensor.garage_car_present', 'on') or is_state('binary_sensor.car_approaching', 'on') or is_state('device_tracker.car_gps', 'home') }}
     homekit_presence:
       friendly_name: "HomeKit Presence"
       device_class: presence

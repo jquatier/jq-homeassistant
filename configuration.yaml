@@ -1,16 +1,10 @@
 homeassistant:
   packages: !include_dir_named packages
-  name: JQ Home
+  name: JQ Home Assistant
   auth_providers:
     - type: homeassistant
     - type: legacy_api_password
       api_password: !secret http_api_password
-    - type: trusted_networks
-      trusted_networks:
-        - 127.0.0.1
-        - ::1
-        - !secret home_subnet
-        - fd00::/8
   latitude: !secret latitude
   longitude: !secret longitude
   elevation: !secret elevation
@@ -18,35 +12,41 @@ homeassistant:
   time_zone: !secret timezone
   customize: !include customize.yaml
 
+config:
 frontend:
   javascript_version: latest
   themes: !include_dir_named themes/
-lovelace:
-  mode: yaml
-system_health:
-map:
-config:
-http:
-auth:
-updater:
-discovery:
-  ignore:
-    - plex_mediaserver
-    - apple_tv
-conversation:
 history:
 logbook:
+map:
+person:
+ssdp:
+sun:
+system_health:
+updater:
+zeroconf:
 recorder:
-  purge_keep_days: 3
+  db_url: !secret db_url
 logger:
   default: info
   logs:
     homeassistant.components.mqtt: debug
     homeassistant.components.shell_command: debug
-sun:
+
+# http:
+#   base_url: host:8123
+
+panel_iframe:
+  router:
+    title: 'ESPHome'
+    icon: mdi:chip
+    url: !secret esphome_dashboard
+
+hacs:
+  token: !secret github_token
 
 mqtt:
-  broker: localhost
+  broker: !secret mqtt_host
   discovery: True
   client_id: home-assistant
   keepalive: 30
@@ -57,6 +57,8 @@ notify:
     platform: pushover
     api_key: !secret pushover_api_key
     user_key: !secret pushover_user_key
+  - platform: alexa_media
+    name: alexa_media
 
 tts:
   - platform: amazon_polly
@@ -68,18 +70,6 @@ media_player:
   - platform: spotify
     client_id: !secret spotify_client_id
     client_secret: !secret spotify_client_secret
-
-alexa_media:
-  accounts:
-    - email: !secret alexa_user
-      password: !secret alexa_password
-      url: amazon.com
-      exclude_devices:
-        - "This Device"
-        - "Jacob's Alexa Apps"
-        - "Jacob's Fire TV"
-        - "My Dash"
-        - Garage
 
 emulated_hue:
   exposed_domains:
@@ -129,7 +119,7 @@ proximity:
     unit_of_measurement: m
 
 alarm_control_panel:
-  - platform: arlo
+  - platform: aarlo
     home_mode_name: JQ-Home
   - platform: alarmdotcom
     username: !secret adc_user
@@ -212,18 +202,12 @@ light:
     name: Kitchen Accent
     entity_id: switch.kitchen_accent_light
 
-shell_command:
-  reboot_presence_pi_upstairs: !secret reboot_presence_pi_upstairs
-  reboot_presence_pi_main_floor: !secret reboot_presence_pi_main_floor
-  reboot_presence_pi_garage: !secret reboot_presence_pi_garage
-
-arlo:
+aarlo:
   username: !secret arlo_user
   password: !secret arlo_password
-  scan_interval: 420
 
 camera:
-  - platform: arlo
+  - platform: aarlo
   - platform: mjpeg
     name: Prusa Camera
     still_image_url: !secret octoprint_image_url
@@ -244,10 +228,6 @@ weather:
     mode: daily
 
 fastdotcom:
-
-transmission:
-  host: !secret transmission_host
-  turtle_mode: true
 
 octoprint:
   - host: !secret octoprint_host

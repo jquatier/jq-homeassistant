@@ -121,6 +121,9 @@
       entity_id: binary_sensor.shop_motion
       to: 'on'
     - platform: state
+      entity_id: binary_sensor.garage_camera_motion
+      to: 'on'
+    - platform: state
       entity_id: binary_sensor.prusa_printing
       from: 'off'
       to: 'on'
@@ -209,15 +212,14 @@
       data_template:
         transition: 60
 
-- alias: 'Shop Lights On'
+- alias: 'Garage Lights On'
   hide_entity: True
   trigger:
     - platform: state
       entity_id: binary_sensor.shop_motion
       to: 'on'
     - platform: state
-      entity_id: binary_sensor.garage_car_present
-      from: 'off'
+      entity_id: binary_sensor.garage_camera_motion
       to: 'on'
   condition:
     condition: and
@@ -229,11 +231,11 @@
         after: '09:00:00'
         before: '22:00:00'
   action:
-    - service: switch.turn_on
+    - service: homeassistant.turn_on
       data: 
-        entity_id: switch.shop_lights
+        entity_id: group.garage_lights
 
-- alias: 'Shop Lights Off'
+- alias: 'Garage Lights Off'
   hide_entity: True
   trigger:
     - platform: state
@@ -241,9 +243,7 @@
       to: 'off'
       for:
         minutes: 30
-    - platform: state
-      entity_id: binary_sensor.garage_car_present
-      to: 'off'
   action:
-    - service: switch.turn_off
-      entity_id: switch.shop_lights
+    - service: homeassistant.turn_off
+      data: 
+        entity_id: group.garage_lights

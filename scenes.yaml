@@ -107,6 +107,8 @@
       transition: 6
       brightness: 50
       rgb_color: [158, 108, 38]
+    switch.shop_lights:
+      state: off
 - name: Bedroom Lights Out
   entities:
     light.bedroom:

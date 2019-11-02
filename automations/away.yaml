@@ -54,11 +54,10 @@
     - service: scene.turn_on
       entity_id: scene.all_lights_off
     - service: alarm_control_panel.alarm_arm_away
-      entity_id: alarm_control_panel.jq_arlo
-    - service: climate.set_away_mode
+      entity_id: alarm_control_panel.aarlo_jq_arlo
+    - service: nest.set_away_mode
       data:
-        entity_id: climate.living_room_nest
-        away_mode: true
+        away_mode: away
     - delay:
         seconds: 15
     - service: scene.turn_on
@@ -104,9 +103,5 @@
       entity_id: input_boolean.away_mode
       to: 'off'
   action:
-    - service: climate.set_away_mode
-      data:
-        entity_id: climate.living_room_nest
-        away_mode: false
     - service: homeassistant.turn_on
       entity_id: switch.transmission_turtle_mode

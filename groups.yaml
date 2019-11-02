@@ -27,6 +27,7 @@ main_lights:
     - light.living_room
     - light.kitchen
     - light.kitchen_accent
+    - light.wled_tower
 all_house_lights:
   name: All House Lights
   entities:
@@ -38,11 +39,11 @@ all_house_lights:
     - light.dining_room_accent
     - light.dining_room_light_level
     - light.entry_lights_level
-    - light.floor_lamp_level
     - light.kitchen_accent
-    - light.main_floor_can_1
-    - light.main_floor_can_2
+    #- light.main_floor_can_1
+    #- light.main_floor_can_2
     - light.night_light_1_led
+    - light.wled_tower
 environment:
   name: Environment
   entities:
@@ -59,29 +60,28 @@ environment:
 system:
   name: System
   entities:
-    - updater.updater
+    - binary_sensor.updater
     - sensor.uptime
     - sensor.uptime_minutes
     - sensor.processor_use
     - sensor.memory_use_percent
     - sensor.fast_com_download
     - binary_sensor.internet_connection
-    - sensor.transmission_status
-    - sensor.transmission_up_speed
-    - sensor.transmission_down_speed
-    - switch.transmission_turtle_mode
+    #- sensor.transmission_status
+    #- sensor.transmission_up_speed
+    #- sensor.transmission_down_speed
+    #- switch.transmission_turtle_mode
 outside:
   name: Outside
   entities:
     - sun.sun
     - sensor.moon
     - sensor.dark_sky_temperature
-    - sensor.dark_sky_temperature_0
     - sensor.dark_sky_summary
-    - sensor.dark_sky_summary_0
+    - sensor.dark_sky_summary_0d
     - sensor.dark_sky_hourly_summary
-    - sensor.dark_sky_daytime_high_temperature_0
-    - sensor.dark_sky_overnight_low_temperature_0
+    - sensor.dark_sky_daytime_high_temperature_0d
+    - sensor.dark_sky_overnight_low_temperature_0d
     - sensor.u_s_air_pollution_level
     - sensor.u_s_air_quality_index
     - sensor.u_s_main_pollutant
@@ -163,3 +163,7 @@ switchplate_backlights:
   entities:
     - light.living_hasp_backlight
     - light.master_hasp_backlight
+garage_lights:
+  name: Garage Lights
+  entities:
+    - switch.shop_lights
