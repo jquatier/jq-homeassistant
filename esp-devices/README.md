@@ -15,6 +15,7 @@ Parts:
   * [MAX7219 7 segment display](https://amzn.to/33dh37k)
 
 Wiring:
+
 | MAX7219  | D1 Mini |
 | -------- | ------- |
 |    CS    |   D2    |
