@@ -1,11 +1,12 @@
-esphomeyaml:
-  name: ttgo_pir_camera
+esphome:
+  name: garage_pir_camera
   platform: ESP32
   board: esp-wrover-kit
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_psk
+  use_address: 192.168.5.188
 
 api:
 
@@ -16,7 +17,7 @@ ota:
 binary_sensor:
   - platform: gpio
     pin: GPIO33
-    name: TTGO Camera Motion
+    name: Garage Camera Motion
     id: pir
     device_class: motion
     on_state:
@@ -24,7 +25,7 @@ binary_sensor:
         - component.update: camera_display
 
 esp32_camera:
-  name: TTGO PIR Camera
+  name: Garage PIR Camera
   external_clock:
     pin: GPIO32
     frequency: 20MHz
@@ -47,7 +48,7 @@ i2c:
 
 font:
   - file: "Arial.ttf"
-    id: font
+    id: arial_font
     size: 14
 
 time:
@@ -65,8 +66,8 @@ display:
     model: "SSD1306 128x64"
     address: 0x3C
     lambda: |-
-      it.printf(64, 0, id(font), TextAlign::TOP_CENTER, "%s", id(ip_address).state.c_str());
+      it.printf(64, 0, id(arial_font), TextAlign::TOP_CENTER, "%s", id(ip_address).state.c_str());
       if (id(pir).state) {
-        it.printf(64, 32, id(font), TextAlign::CENTER, "%s", "MOTION");
+        it.printf(64, 32, id(arial_font), TextAlign::CENTER, "%s", "MOTION");
       }
-      it.strftime(64, 64, id(font), TextAlign::BASELINE_CENTER, "%H:%M", id(homeassistant_time).now());
+      it.strftime(64, 64, id(arial_font), TextAlign::BASELINE_CENTER, "%H:%M", id(homeassistant_time).now());

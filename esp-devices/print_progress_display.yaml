@@ -1,0 +1,55 @@
+esphomeyaml:
+  name: print_progress_display
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_psk
+
+api:
+
+logger:
+
+ota:
+
+binary_sensor:
+  - platform: homeassistant
+    id: prusa_printing
+    entity_id: binary_sensor.prusa_printing
+    filters:
+      - delayed_off: 1h
+  - platform: homeassistant
+    id: ender_printing
+    entity_id: binary_sensor.ender_printing
+    filters:
+      - delayed_off: 1h
+
+sensor:
+  - platform: homeassistant
+    id: prusa_job_percentage
+    entity_id: sensor.prusa_job_percentage
+  - platform: homeassistant
+    id: ender_job_percentage
+    entity_id: sensor.ender_job_percentage
+
+spi:
+  clk_pin: D0
+  mosi_pin: D1
+
+display:
+  - platform: max7219
+    id: seg_display
+    cs_pin: D2
+    num_chips: 1
+    lambda: |-
+      if(id(prusa_printing).state) {
+        it.printf("%.0f", id(prusa_job_percentage).state);
+      } else {
+        it.print("    ");
+      }
+      if(id(ender_printing).state) {
+        it.printf(4, "%4.0f", id(ender_job_percentage).state);
+      } else {
+        it.print(4, "    ");
+      }

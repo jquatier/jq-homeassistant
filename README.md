@@ -2,7 +2,7 @@
 My configuration for Home Assistant (https://home-assistant.io/)
 
 ## Custom Sensors / Devices (esphome)
-See `/esp-sensors` directory for [esphome](https://esphome.io/) configuration
+See [esp-devices](esp-devices) directory for [esphome](https://esphome.io/) configuration
  * 4x Multisensor (temp + humidity + motion) ([BRUH-based](https://esphomelib.com/esphomeyaml/cookbook/bruh.html))
  * Garage Car Presence Sensor (HC-SR04 ultrasonic)
  * Mini Blinds (stepper motor driver)
